@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_recipr_app/src/services/apiService.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({ Key? key }) : super(key: key);
@@ -8,6 +9,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Future <void> getRecipes(String recipeName) async  {
+    var data = await ApiService().get(recipeName);
+    if(data['success']){
+
+    }
+  }
+  @override
+  void initState() {
+    super.initState();
+    getRecipes("");
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
