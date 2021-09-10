@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_recipr_app/src/screens/homeScreen.dart';
 
 
 class MyApp extends StatelessWidget {
@@ -9,7 +10,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/home',
       routes: {
-        // '/home': (context) => HomeScreen(),
+        '/home': (context) => HomeScreen(),
         // '/loading': (context) => LoadingScreen(),
         // '/loaction': (context) => LocationScreen(),
       },
