@@ -23,9 +23,8 @@ class _HomeScreenState extends State<HomeScreen> {
     var data = await ApiService().get(recipeName);
     if(data['success']){
       recipeAPIDATA = RecipeList.fromJson(jsonDecode(data['data']));
-      isApiHit = true;
       setState(() {
-        
+      isApiHit = true;        
       });
     }
   }
