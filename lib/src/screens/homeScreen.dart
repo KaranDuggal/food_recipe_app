@@ -15,31 +15,23 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   var recipeAPIDATA;
-  List<Recipe> recipeList = <Recipe>[];
   bool isApiHit = false;
+  String search = "";
 
   Future <void> getRecipes(String recipeName) async  {
     var data = await ApiService().get(recipeName);
     if(data['success']){
       recipeAPIDATA = RecipeList.fromJson(jsonDecode(data['data']));
       isApiHit = true;
-      var list = recipeAPIDATA.hits;
-      list.forEach((list) {
-        recipeList.add(list.recipe);
-      });
-
       setState(() {
         
       });
-      // recipeList.forEach((element) {
-      //   print(element.label);
-      // });
     }
   }
   @override
   void initState() {
     super.initState();
-    getRecipes("chicken");
+    getRecipes("pasta");
   }
   @override
   Widget build(BuildContext context) {
@@ -52,7 +44,6 @@ class _HomeScreenState extends State<HomeScreen> {
               height: MediaQuery.of(context).size.height,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  // begin: to,
                   colors: [
                     Colors.red,
                     Colors.orange
@@ -60,80 +51,200 @@ class _HomeScreenState extends State<HomeScreen> {
                 )
               ),
             ),
-            Column(
-              children: [
-                SafeArea(
-                  child: Container(
-                        // color: Colors.grey,
-                        padding: EdgeInsets.all(8),
-                        margin: EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 24
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.blue.shade100,
-                          borderRadius: BorderRadius.circular(50)
-                        ),
-                        child: Row(
-                          children: [
-                            SizedBox(width:10),
-                            GestureDetector(
-                              onTap: () async {
-                                // if(search.isNotEmpty){
-                                //   apiHit = false;
-                                //   setState(() {
-                                //   });
-                                //   await getData("$search");
-                                // }
-                              },
-                              child: Container(child: Icon(Icons.search)),
-                            ),
-                            SizedBox(width:10),
-                            Expanded(
-                              child: TextFormField(
-                                keyboardType: TextInputType.text,
-                                // onFieldSubmitted: (value) async{
-                                //   if(value.isNotEmpty){
-                                //     apiHit = false;
-                                //     setState(() {
-                                //     });
-                                //     await getData("$search");
-                                //   }
-                                // },
-                                decoration: InputDecoration(
-                                  hintText: "Search any Recipe",
-                                  border: InputBorder.none
-                                ),
-                                // onChanged: (value){
-                                //   search = value;
-                                // },
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  SafeArea(
+                    child: Container(
+                          // color: Colors.grey,
+                          padding: EdgeInsets.all(8),
+                          margin: EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 24
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.shade100,
+                            borderRadius: BorderRadius.circular(50)
+                          ),
+                          child: Row(
+                            children: [
+                              SizedBox(width:10),
+                              GestureDetector(
+                                onTap: () async {
+                                  if(search.isNotEmpty){
+                                      isApiHit = false;
+                                      setState(() {
+                                      });
+                                      await getRecipes(search);
+                                    }
+                                },
+                                child: Container(child: Icon(Icons.search)),
+                              ),
+                              SizedBox(width:10),
+                              Expanded(
+                                child: TextFormField(
+                                  keyboardType: TextInputType.text,
+                                  onFieldSubmitted: (value) async{
+                                    if(value.isNotEmpty){
+                                      isApiHit = false;
+                                      setState(() {
+                                      });
+                                      await getRecipes(value);
+                                    }
+                                  },
+                                  decoration: InputDecoration(
+                                    hintText: "Search any Recipe",
+                                    border: InputBorder.none
+                                  ),
+                                  onChanged: (value){
+                                    search = value;
+                                  },
+                                )
                               )
-                            )
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                ),
-                Container(
-                  padding:EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children:[
-                      Text("What Do You Want To Cook Today?",style: TextStyle(fontSize: 36),),
-                      SizedBox(height: 5,),
-                      Text("Let's cook something New!",style: TextStyle(fontSize: 20),),
-                    ]
                   ),
-                ),
-                Container(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: recipeList.length,
-                    itemBuilder: (context,index){
-                      return Text("test");
-                    }
+                  Container(
+                    padding:EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children:[
+                        Text("What Do You Want To Cook Today?",style: TextStyle(fontSize: 36),),
+                        SizedBox(height: 5,),
+                        Text("Let's cook something New!",style: TextStyle(fontSize: 20),),
+                      ]
+                    ),
                   ),
-                )
-              ],
+                  Container(
+                    height: 100,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: recipeAPIDATA.hits.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context,index){
+                        return Container(
+                          child: InkWell(
+                            onTap: (){
+
+                            },
+                            child: Card(
+                              margin: EdgeInsets.fromLTRB(15, 15, 0, 0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18)
+                              ),
+                              elevation: 0.0,
+                              child: Stack(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(18),
+                                    child: Image.network('${recipeAPIDATA.hits[index].recipe.image}',fit: BoxFit.cover,height: 100,width: 200,),
+                                  ),
+                                  Positioned(
+                                    left: 0,right: 0,top: 0,bottom: 0,
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 5
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black45
+                                        ,borderRadius: BorderRadius.circular(18)
+                                      ),
+                                      child:Column(
+                                        mainAxisAlignment: MainAxisAlignment.center
+                                        ,
+                                        children: [
+                                          Text("${recipeAPIDATA.hits[index].recipe.label}",style: TextStyle(fontSize: 20,color: Colors.white
+                                          ),)
+                                        ],
+                                      )
+                                    )
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                    ),
+                  ),
+                  Container(
+                    child: ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: recipeAPIDATA.hits.length,
+                      itemBuilder: (context,index){
+                        return InkWell(
+                          onTap: (){
+                            print("object");
+                          },
+                          child : Card(
+                            margin: EdgeInsets.symmetric(vertical: 5,horizontal: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25)
+                            ),
+                            child: Stack(
+                              children: [
+                                ClipRRect(
+                                  child: Image.network('${recipeAPIDATA.hits[index].recipe.image}',fit: BoxFit.cover,width: double.infinity,height: 300,),
+                                  borderRadius: BorderRadius.circular(25),
+                                ),
+                                Positioned(
+                                  left: 0,
+                                  bottom: 0,
+                                  right: 0,
+                                  child: Container(
+                                    // width: double.infinity,
+                                    padding: EdgeInsets.all(15),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white54,
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(25),
+                                        bottomRight: Radius.circular(25), 
+                                      )
+                                    ),
+                                    child: Text(
+                                      '${recipeAPIDATA.hits[index].recipe.label}',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold
+                                      ),
+                                    )
+                                  ),
+                                ),
+                                Positioned(
+                                  right: 0,
+                                  width: 80,
+                                  height: 25,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(10),
+                                        topRight: Radius.circular(25)
+                                      )
+                                    ),
+                                    child: Container(
+                                      child: Row(
+                                        mainAxisAlignment:MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.local_fire_department,size: 15,),
+                                          Text('${recipeAPIDATA.hits[index].recipe.calories.toString().substring(0,6)}'),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                )
+                              ],
+                            ),
+                          )
+                        );
+                      }
+                    ),
+                  )
+                ],
+              ),
             )
           ],
         ),
