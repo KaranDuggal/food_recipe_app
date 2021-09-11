@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:food_recipr_app/src/models/recipeListModel.dart';
 import 'package:food_recipr_app/src/screens/loadingScreen.dart';
+import 'package:food_recipr_app/src/screens/recipeViewScreen.dart';
 import 'package:food_recipr_app/src/services/apiService.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -126,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         return Container(
                           child: InkWell(
                             onTap: (){
-
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>RecipeViewScreen("${recipeAPIDATA.hits[index].recipe.url}")));
                             },
                             child: Card(
                               margin: EdgeInsets.fromLTRB(15, 15, 0, 0),
@@ -177,7 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemBuilder: (context,index){
                         return InkWell(
                           onTap: (){
-                            print("object");
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>RecipeViewScreen("${recipeAPIDATA.hits[index].recipe.url}")));
                           },
                           child : Card(
                             margin: EdgeInsets.symmetric(vertical: 5,horizontal: 12),
